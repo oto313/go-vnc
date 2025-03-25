@@ -60,6 +60,8 @@ type ClientConfig struct {
 	// If this is not set, then all messages will be discarded.
 	ServerMessageCh chan<- ServerMessage
 
+	ErrorCh chan<- error
+
 	// A slice of supported messages that can be read from the server.
 	// This only needs to contain NEW server messages, and doesn't
 	// need to explicitly contain the RFC-required messages.
@@ -445,6 +447,7 @@ func (c *ClientConn) mainLoop() {
 	for {
 		var messageType uint8
 		if err := binary.Read(c.c, binary.BigEndian, &messageType); err != nil {
+			c.config.ErrorCh <- err
 			break
 		}
 
@@ -456,6 +459,7 @@ func (c *ClientConn) mainLoop() {
 
 		parsedMsg, err := msg.Read(c, c.c)
 		if err != nil {
+			c.config.ErrorCh <- err
 			break
 		}
 
