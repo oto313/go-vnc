@@ -1,7 +1,6 @@
 package vnc
 
 import (
-	"MediaProCon/internal/common"
 	"fmt"
 	"io"
 	"time"
@@ -23,7 +22,7 @@ type Encoding interface {
 //
 // See RFC 6143 Section 7.7.1
 type RawEncoding struct {
-	Framebuffer common.Framebuffer
+	Framebuffer Framebuffer
 	rectBuffer  []byte
 }
 
