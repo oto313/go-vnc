@@ -1,9 +1,7 @@
 package vnc
 
 import (
-	"fmt"
 	"io"
-	"time"
 )
 
 // An Encoding implements a method for encoding pixel data that is
@@ -43,7 +41,6 @@ func (*RawEncoding) Type() int32 {
 
 func (e *RawEncoding) Read(c *ClientConn, rect *Rectangle, r io.Reader) (Encoding, error) {
 	bytesPerPixel := int(c.PixelFormat.BPP / 8)
-	startTime := time.Now().Local()
 	rectLen := int(rect.Height) * int(rect.Width) * int(bytesPerPixel)
 	_, err := io.ReadFull(r, e.rectBuffer[:rectLen])
 	if err != nil {
@@ -64,6 +61,5 @@ func (e *RawEncoding) Read(c *ClientConn, rect *Rectangle, r io.Reader) (Encodin
 			buffer[dstColorIndex+0] = pixelBytes[2]
 		}
 	}
-	fmt.Printf("Time elapsed: %v\n", time.Since(startTime))
 	return e, nil
 }
